@@ -1,0 +1,65 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz 2</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+</head>
+<body>
+    <div class="container">
+        <div id="searchBar">
+            <p class="mt-4">ระบุคำค้นหา</p>
+            <div class="row m-0">
+                <input type="text" class="w-75" id="filter"><button class="btn btn-info px-4 mx-4" onclick="filterCard()">ค้นหา</button>
+            </div>
+            <p class="mt-4" id="result"></p>
+        </div>
+        <div class="row" id="music"></div>
+    </div>
+    <script>
+        var data;
+
+        // JSON Loader
+        var xmlhttp = new XMLHttpRequest();
+
+        xmlhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            data = JSON.parse(this.responseText);
+            console.log(data.tracks)
+            cardGenerator(data.tracks.items, "all");
+        }
+        };
+        xmlhttp.open("GET", "ezquiz.json", true);
+        xmlhttp.send();
+
+        function cardGenerator(data, search) {
+            let txt = "";
+            let count = 0;
+            data.forEach(function(d) {
+                let albumName = d.album.name.toLowerCase();
+                let artistName = d.album.artists[0].name.toLowerCase();
+                if(albumName.indexOf(search) != -1 || artistName.indexOf(search) != -1 || search == "all") {
+                    count += 1;
+                    txt += `<div class="col-4"><div class="card m-4">`;
+                    d.album.images.forEach(function(i) {
+                        if(i.height == 640) txt += `<img src="${i.url}" class="coverImage w-100 h-100 m-0">`;
+                    });
+                    txt += `<div class="p-4"><h5>${d.album.name}</h5><p>Artist: ${d.album.artists[0].name}</p><p>Release date: ${d.album.release_date}</p>
+                            <p>Avaliable: ${d.album.available_markets.length} countries</p></div></div></div>`;
+                }
+            });
+            document.getElementById("music").innerHTML = txt;
+            console.log(count)
+            if(count == 0) document.getElementById("result").innerHTML = "<b class='text-danger'>Not Found</b>";
+            else document.getElementById("result").innerText = "ผลลัพธ์การค้นหา: " + count;
+        }
+
+        function filterCard() {
+            let search = document.getElementById("filter").value;
+            console.log(data);
+            console.log(search)
+            cardGenerator(data.tracks.items, search.toLowerCase());
+        }
+    </script>
+</body>
+</html>

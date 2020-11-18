@@ -30,7 +30,7 @@
                 d.album.images.forEach(function(i) {
                     if(i.height == 640) txt += `<img src="${i.url}" class="coverImage w-100 h-100 m-0">`;
                 });
-                txt += `<div class="p-4"><h5>${d.album.name}</h5><p>Artist: ${d.album.artists.name}</p><p>Release date: ${d.album.release_date}</p>
+                txt += `<div class="p-4"><h5>${d.album.name}</h5><p>Artist: ${d.album.artists[0].name}</p><p>Release date: ${d.album.release_date}</p>
                         <p>Avaliable: ${d.album.available_markets.length} countries</p></div></div></div>`;
             });
             document.getElementById("music").innerHTML = txt;
